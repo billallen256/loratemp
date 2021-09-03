@@ -38,5 +38,5 @@ void loop()
   rf95.waitPacketSent();
   message(2);
   Println("Going to sleep...");
-  deep_sleep(50);
+  deep_sleep(300);
 }
