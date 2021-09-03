@@ -1,4 +1,4 @@
 #include<Arduino.h>
 
-void message(int);
+void blink_message(int);
 void setup_blink();

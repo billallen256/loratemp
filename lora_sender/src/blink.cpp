@@ -13,7 +13,7 @@ void blink_n(int n) {
   }
 }
 
-void message(int message_number) {
+void blink_message(int message_number) {
   for (int i=0; i<3; i++) {
     blink_n(message_number);
     delay(1000);
