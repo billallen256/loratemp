@@ -4,19 +4,21 @@
 #include "gauge.h"
 #include "radio.h"
 #include "serial.h"
+#include "sleep.h"
 #include "temperature.h"
 
 void setup()
 {
   setup_blink();
   setup_serial();
+  setup_rtc();
   setup_radio();
   setup_temperature();
 }
  
 void loop()
 {
-  delay(1000); // Wait 1 second between transmits, could also 'sleep' here!
+  //delay(1000); // Wait 1 second between transmits, could also 'sleep' here!
 
   char temp_buffer[GAUGE_BUFFER_SIZE];
   float temperature = tempsensor.readTempC();
@@ -35,4 +37,6 @@ void loop()
   delay(10);
   rf95.waitPacketSent();
   message(2);
+  Println("Going to sleep...");
+  deep_sleep(50);
 }
