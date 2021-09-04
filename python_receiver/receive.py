@@ -1,11 +1,49 @@
 # vim: expandtab tabstop=4 shiftwidth=4
 
+from json import dumps
+from os import environ
 from time import sleep
+from typing import Dict, Tuple
+
+from azure.iot.device import IoTHubDeviceClient, Message
+
 import serial
 
-arduino = serial.Serial(port='/dev/cu.usbmodem14201', baudrate=115200, timeout=.1)
+def iothub_client_init():
+    return IoTHubDeviceClient.create_from_connection_string(environ['CONNECTIONSTRING'])
 
-while True:
-    data = arduino.readline()
-    print(data)
-    sleep(1)
+def parse_key_value(key_value: str) -> Tuple[str, float]:
+    key, value = key_value.split(':')
+    value, _ = value.split('|')
+    return key.strip(), float(value)
+
+def parse_telemetry(telemetry: str) -> Dict[str, float]:
+    key_values = telemetry.split(';')
+    results = {}
+
+    for key_value in key_values:
+        key, value = parse_key_value(key_value)
+        results[key] = float(value) / 100.0
+
+    return results
+
+def main():
+    arduino = serial.Serial(port='/dev/cu.usbmodem14201', baudrate=115200, timeout=.1)
+    client = iothub_client_init()
+
+    while True:
+        data = arduino.readline()
+
+        if len(data) > 0:
+            print(data)
+
+            if data.startswith(b'Got: '):
+                telemetry = parse_telemetry(str(data, encoding='utf8')[5:].strip())
+                message_str = dumps(telemetry)
+                print(message_str)
+                client.send_message(Message(message_str))
+
+        sleep(1)
+
+if __name__ == "__main__":
+    main()

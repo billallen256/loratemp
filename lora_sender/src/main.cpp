@@ -43,7 +43,7 @@ void loop()
     
     blink_message(2);
     
-    delay(1000); // Wait 1 second between transmits, could also 'sleep' here!
-    //Println("Going to sleep...");
-    //deep_sleep(300);
+    //delay(1000); // Wait 1 second between transmits, could also 'sleep' here!
+    Println("Going to sleep...");
+    deep_sleep(120);
 }

@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pyserial = "*"
+azure-iot-device = "*"
+azure-iot-hub = "*"
+azure-iothub-service-client = "*"
+azure-iothub-device-client = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
