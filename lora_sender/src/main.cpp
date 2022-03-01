@@ -16,23 +16,24 @@ void setup()
     setup_radio();
     setup_temperature();
 }
- 
+
+char temperature_buffer[GAUGE_BUFFER_SIZE];
+char voltage_buffer[GAUGE_BUFFER_SIZE];
+char send_buffer[GAUGE_BUFFER_SIZE*2];
+
 void loop()
 {
-    char temperature_buffer[GAUGE_BUFFER_SIZE];
     float temperature = tempsensor.readTempC();
     Gauge_str(temperature_buffer, "temp", (int)(temperature*100));
 
-    char voltage_buffer[GAUGE_BUFFER_SIZE];
     float voltage = get_voltage_data();
     Gauge_str(voltage_buffer, "volt", (int)(voltage*100));
 
-    char send_buffer[GAUGE_BUFFER_SIZE*2];
     int send_buffer_used = sprintf(send_buffer, "%s;%s", temperature_buffer, voltage_buffer);
 
     Println(send_buffer);
     Println(send_buffer_used);
-    
+
     Println("Sending...");
     delay(10);
     rf95.send((uint8_t *)send_buffer, send_buffer_used+1);
