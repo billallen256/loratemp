@@ -12,18 +12,27 @@ void alarmMatch() {
     Println("Waking up...");
 }
 
+int hms_to_seconds(int hour, int minute, int second) {
+    return (hour * 60 * 60) + (minute * 60) + second;
+}
+
+HMS seconds_to_hms(int seconds) {
+    HMS hms;
+    hms.hour = seconds / (60 * 60);
+    int hour_seconds = hms.hour * 60 * 60;
+    hms.minute = (seconds - hour_seconds) / 60;
+    int minute_seconds = hms.minute * 60;
+    hms.second = seconds - hour_seconds - minute_seconds;
+    return hms;
+}
+
 void deep_sleep(int seconds) {
-    int sleep_hours = seconds / (60 * 60);
-    int sleep_minutes = seconds / 60;
-    int sleep_seconds = seconds - (sleep_hours * 60 * 60) - (sleep_minutes * 60);
-    
     int now_hour = rtc.getHours();
     int now_minute = rtc.getMinutes();
     int now_second = rtc.getSeconds();
-    
-    int wake_hour = (now_hour + sleep_hours) % 24;
-    int wake_minute = (now_minute + sleep_minutes) % 60;
-    int wake_second = (now_second + sleep_seconds) % 60;
+
+    int wake_epoch = hms_to_seconds(now_hour, now_minute, now_second) + seconds;
+    HMS wake_hms = seconds_to_hms(wake_epoch);
     
     Println("Now:");
     Println(now_hour);
@@ -31,13 +40,13 @@ void deep_sleep(int seconds) {
     Println(now_second);
     
     Println("Waking:");
-    Println(wake_hour);
-    Println(wake_minute);
-    Println(wake_second);
+    Println(wake_hms.hour);
+    Println(wake_hms.minute);
+    Println(wake_hms.second);
 
-    rtc.setAlarmHours(wake_hour);
-    rtc.setAlarmMinutes(wake_minute);
-    rtc.setAlarmSeconds(wake_second);
+    rtc.setAlarmHours(wake_hms.hour);
+    rtc.setAlarmMinutes(wake_hms.minute);
+    rtc.setAlarmSeconds(wake_hms.second);
     rtc.enableAlarm(rtc.MATCH_HHMMSS);
     rtc.attachInterrupt(alarmMatch); // Attach function to interupt
     rtc.standbyMode();    // Sleep until next alarm match

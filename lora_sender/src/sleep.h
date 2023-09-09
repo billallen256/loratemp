@@ -9,4 +9,10 @@
 void setup_rtc();
 void deep_sleep(int seconds);
 
+struct HMS {
+    int hour;
+    int minute;
+    int second;
+};
+
 #endif
