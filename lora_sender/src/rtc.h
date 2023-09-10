@@ -8,6 +8,7 @@
 
 void setup_rtc();
 void deep_sleep(int seconds);
+int get_elapsed();
 
 struct HMS {
     int hour;

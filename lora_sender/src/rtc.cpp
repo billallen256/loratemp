@@ -1,4 +1,4 @@
-#include "sleep.h"
+#include "rtc.h"
 
 // based on https://github.com/cavemoa/Feather-M0-Adalogger/blob/master/SimpleSleep/SimpleSleep.ino
 
@@ -27,12 +27,8 @@ HMS seconds_to_hms(int seconds) {
 }
 
 void deep_sleep(int seconds) {
-    int now_hour = rtc.getHours();
-    int now_minute = rtc.getMinutes();
-    int now_second = rtc.getSeconds();
-
-    int wake_epoch = hms_to_seconds(now_hour, now_minute, now_second) + seconds;
-    HMS wake_hms = seconds_to_hms(wake_epoch);
+    int wake_seconds = get_elapsed() + seconds;
+    HMS wake_hms = seconds_to_hms(wake_seconds);
     
     Println("Now:");
     Println(now_hour);
@@ -50,4 +46,12 @@ void deep_sleep(int seconds) {
     rtc.enableAlarm(rtc.MATCH_HHMMSS);
     rtc.attachInterrupt(alarmMatch); // Attach function to interupt
     rtc.standbyMode();    // Sleep until next alarm match
+}
+
+int get_elapsed() {
+    return hms_to_seconds(
+        rtc.getHours(),
+        rtc.getMinutes(),
+        rtc.getSeconds()
+    );
 }

@@ -1,12 +1,13 @@
 #include <Arduino.h>
 
 #include "blink.h"
-#include "gauge.h"
+#include "config.h"
+#include "metric.h"
 #include "ms8607.h"
 #include "power.h"
 #include "radio.h"
+#include "rtc.h"
 #include "serial.h"
-#include "sleep.h"
 
 void setup()
 {
@@ -14,33 +15,36 @@ void setup()
     setup_serial();
     setup_ms8607();
     setup_rtc();
-    setup_radio();
+    setup_radio(TX_FREQ, TX_POWER);
 }
 
-char humidity_buffer[GAUGE_BUFFER_SIZE];
-char pressure_buffer[GAUGE_BUFFER_SIZE];
-char temperature_buffer[GAUGE_BUFFER_SIZE];
-char voltage_buffer[GAUGE_BUFFER_SIZE];
+char elapsed_buffer[METRIC_BUFFER_SIZE];
+char humidity_buffer[METRIC_BUFFER_SIZE];
+char pressure_buffer[METRIC_BUFFER_SIZE];
+char temperature_buffer[METRIC_BUFFER_SIZE];
+char voltage_buffer[METRIC_BUFFER_SIZE];
 
-char send_buffer[GAUGE_BUFFER_SIZE*4];
+char send_buffer[METRIC_BUFFER_SIZE*5];
 
-void loop()
-{
+void loop() {
     refresh_ms8607_values();
 
+    int elapsed = get_elapsed();
     float humidity = get_humidity();
     float pressure = get_pressure();
     float temperature = get_temperature();
     float voltage = get_voltage_data();
 
-    Gauge_str(humidity_buffer, "humi", (int)(humidity*100));
-    Gauge_str(pressure_buffer, "pres", (int)(pressure*100));
-    Gauge_str(temperature_buffer, "temp", (int)(temperature*100));
-    Gauge_str(voltage_buffer, "volt", (int)(voltage*100));
+    Metric_str(elapsed_buffer, "elap", elapsed, "c");
+    Metric_str(humidity_buffer, "humi", (int)(humidity*100), "g");
+    Metric_str(pressure_buffer, "pres", (int)(pressure*100), "g");
+    Metric_str(temperature_buffer, "temp", (int)(temperature*100), "g");
+    Metric_str(voltage_buffer, "volt", (int)(voltage*100), "g");
 
     int send_buffer_used = sprintf(
         send_buffer,
-        "%s;%s;%s;%s",
+        "%s;%s;%s;%s;%s",
+        elapsed_buffer,
         humidity_buffer,
         pressure_buffer,
         temperature_buffer,
@@ -60,7 +64,6 @@ void loop()
     
     blink_message(2);
     
-    //delay(1000); // Wait 1 second between transmits, could also 'sleep' here!
     Println("Going to sleep...");
-    deep_sleep(600);
+    deep_sleep(DEEP_SLEEP_SECONDS);
 }

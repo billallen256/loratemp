@@ -2,21 +2,21 @@
 
 void blink() {
   digitalWrite(LED_BUILTIN, HIGH);
-  delay(150);
+  delay(BLINK_ON_MS);
   digitalWrite(LED_BUILTIN, LOW);
 }
 
 void blink_n(int n) {
-  for (int i=0; i<n; i++) {
+  for (int i = 0; i < n; ++i) {
     blink();
-    delay(200);
+    delay(BLINK_OFF_MS);
   }
 }
 
 void blink_message(int message_number) {
-  for (int i=0; i<3; i++) {
+  for (int i = 0; i < BLINK_REPETITIONS; ++i) {
     blink_n(message_number);
-    delay(1000);
+    delay(BLINK_SEPARATION_MS);
   }
 }
 

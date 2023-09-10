@@ -3,9 +3,6 @@
 #ifndef _SERIAL_H_
 #define _SERIAL_H_ 1
 
-// Comment this line out if running headless.
-#define START_SERIAL
-
 #ifdef START_SERIAL
 #define Println(a) (Serial.println(a))
 #define Print(a) (Serial.print(a))
