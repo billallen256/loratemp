@@ -12,11 +12,11 @@ void alarmMatch() {
     Println("Waking up...");
 }
 
-int hms_to_seconds(int hour, int minute, int second) {
+int hms_to_day_seconds(int hour, int minute, int second) {
     return (hour * 60 * 60) + (minute * 60) + second;
 }
 
-HMS seconds_to_hms(int seconds) {
+HMS day_seconds_to_hms(int seconds) {
     HMS hms;
     hms.hour = seconds / (60 * 60);
     int hour_seconds = hms.hour * 60 * 60;
@@ -27,8 +27,8 @@ HMS seconds_to_hms(int seconds) {
 }
 
 void deep_sleep(int seconds) {
-    int wake_seconds = get_elapsed() + seconds;
-    HMS wake_hms = seconds_to_hms(wake_seconds);
+    int wake_seconds_into_day = (get_elapsed() + seconds) % (60 * 60 * 24);
+    HMS wake_hms = day_seconds_to_hms(wake_seconds_into_day);
     
     Println("Now:");
     Println(now_hour);
@@ -49,7 +49,7 @@ void deep_sleep(int seconds) {
 }
 
 int get_elapsed() {
-    return hms_to_seconds(
+    return hms_to_day_seconds(
         rtc.getHours(),
         rtc.getMinutes(),
         rtc.getSeconds()

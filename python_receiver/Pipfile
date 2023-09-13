@@ -5,12 +5,12 @@ name = "pypi"
 
 [packages]
 pyserial = "*"
-azure-iot-device = "*"
-azure-iot-hub = "*"
-azure-iothub-service-client = "*"
-azure-iothub-device-client = "*"
+#azure-iot-device = "*"
+#azure-iot-hub = "*"
+#azure-iothub-service-client = "*"
+#azure-iothub-device-client = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.8"
+python_version = "3.10"
