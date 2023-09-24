@@ -5,7 +5,7 @@
 RTCZero rtc;
 
 void setup_rtc() {
-    rtc.begin();
+    rtc.begin(true);
 }
 
 void alarmMatch() {
@@ -29,11 +29,6 @@ HMS day_seconds_to_hms(int seconds) {
 void deep_sleep(int seconds) {
     int wake_seconds_into_day = (get_elapsed() + seconds) % (60 * 60 * 24);
     HMS wake_hms = day_seconds_to_hms(wake_seconds_into_day);
-    
-    Println("Now:");
-    Println(now_hour);
-    Println(now_minute);
-    Println(now_second);
     
     Println("Waking:");
     Println(wake_hms.hour);

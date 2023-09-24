@@ -7,6 +7,7 @@ int const DEEP_SLEEP_SECONDS = 20;
 int const BLINK_REPETITIONS = 3;
 float const TX_FREQ = 434.0;
 int8_t const TX_POWER = 23;
+uint16_t const WAIT_PACKET_SENT_MS = 10000;
 
 // Comment this line out if running headless.
 //#define START_SERIAL

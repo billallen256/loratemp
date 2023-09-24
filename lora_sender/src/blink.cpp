@@ -20,6 +20,12 @@ void blink_message(int message_number) {
   }
 }
 
+void blink_message_forever(int message_number) {
+  while (true) {
+    blink_message(message_number);
+  }
+}
+
 void setup_blink() {
   pinMode(LED_BUILTIN, OUTPUT);
 }
